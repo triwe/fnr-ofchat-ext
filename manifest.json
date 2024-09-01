@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "OnlyFans Feedback Notion",
+  "version": "1.0",
+  "permissions": ["activeTab", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://onlyfans.com/*"],
+      "js": ["sidebar.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["sidebar.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

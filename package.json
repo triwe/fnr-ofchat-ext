@@ -1,0 +1,11 @@
+{
+    "name": "fnr-chat-ext-functions",
+    "version": "1.0.0",
+    "main": "index.js",
+    "engines": {
+      "node": "16.x"
+    },
+    "dependencies": {
+      "@notionhq/client": "^0.4.0"
+    }
+  }

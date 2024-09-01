@@ -1,0 +1,108 @@
+#feedback-sidebar {
+    position: fixed;
+    top: 75%; /* Position the sidebar in the lower third of the screen */
+    right: -200px; /* Off-screen by default */
+    width: 200px;
+    max-height: calc(100% - 20px); /* Ensure the sidebar doesn’t exceed the screen height minus a small margin */
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+    padding: 10px;
+    transition: right 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto; /* Add vertical scroll if content exceeds the max height */
+    transform: translateY(-75%); /* Adjust to expand upwards */
+}
+
+#feedback-sidebar.open {
+    right: 0; /* Slide in the sidebar when opened */
+}
+
+#feedback-toggle {
+    position: fixed;
+    top: 65%; /* Position the toggle button in the lower third of the screen */
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background-color: #007bff;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    border-radius: 4px 0 0 4px;
+    transform: translateY(-75%); /* Align with sidebar expansion */
+}
+
+#feedback-sidebar button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+}
+
+#feedback-sidebar button:hover {
+    background-color: #0056b3;
+}
+
+#feedback-sidebar label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333333; /* Darker color for visibility */
+}
+
+#feedback-sidebar input[type="text"], #feedback-sidebar textarea {
+    width: calc(100% - 20px);
+    margin-top: 5px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#feedback-sidebar textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+#feedback-sidebar button[type="button"] {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    text-align: center;
+    width: 100%;
+}
+
+#feedback-sidebar button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+/* Close button for the form */
+#close-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    background-color: transparent;
+    border: none;
+    color: #333333;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 1001;
+}
+
+#close-form:hover {
+    color: #ff0000;
+}
