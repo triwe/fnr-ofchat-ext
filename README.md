@@ -18,8 +18,8 @@ This repository contains the front-end code for a Chrome browser extension that 
 Clone the repository to your local development environment:
 
 ```bash
-git clone https://github.com/triwe/fnr-ofchat-ext-front.git
-cd fnr-ofchat-ext-front
+git clone https://github.com/triwe/fnr-ofchat-ext.git
+cd fnr-ofchat-ext
 ```
 
 ### 2. Install Dependencies
@@ -102,16 +102,25 @@ To make changes to the extension:
 
 ### Testing the Extension
 
-For testing:
+- **Console Logs:** We've added detailed console logging in the `submitFeedbackForm` and `submitRequestForm` functions. These logs can be observed in Chrome DevTools to verify that form data is being correctly captured and sent to the Notion database.
+- **Simulate Requests:** Use the Chrome DevTools Network tab to inspect requests sent to the `SendToNotion` function.
+- **Check Logs:** Use the `gcloud functions logs read sendToNotion` command to monitor logs from the Cloud Function.
+- **Notion Integration:** Verify that feedback and requests appear correctly in the Notion database.
 
-1. **Simulate Requests:** Use the Chrome DevTools Network tab to inspect requests sent to the `SendToNotion` function.
-2. **Check Logs:** Use the `gcloud functions logs read sendToNotion` command to monitor logs from the Cloud Function.
-3. **Notion Integration:** Verify that feedback and requests appear correctly in the Notion database.
+### Error Handling
+
+- **Undefined Budget Field:** We updated the `sendDataToNotion` function to handle cases where the `budget` field may be undefined in the feedback form. This ensures that no errors occur when submitting feedback without a budget.
+- **General Errors:** Error messages will be displayed in the sidebar if a form submission fails.
+
+### Final Code Review
+
+- Before deploying or releasing the extension, review the code to remove or comment out any `console.log` statements that were used for debugging purposes. This will help clean up the code and avoid unnecessary console output in production.
 
 ### Recent Updates
 
 - **Support for Separate Forms:** The extension now supports two forms—one for feedback and another for requests—ensuring that the correct data structure is sent to the Notion database.
 - **Enhanced Field Handling:** The extension now properly handles additional fields such as `requestDetails`, `notes`, and `budget`, ensuring that all necessary information is captured and sent.
+- **Enhanced Error Handling:** Added conditional checks for the `budget` field in the `sendDataToNotion` function to prevent errors when the field is undefined.
 
 ## Troubleshooting
 
@@ -124,6 +133,10 @@ For testing:
 ### Organization Policy Restrictions
 
 If your deployment or execution fails due to restrictive organization policies, you may need to modify the policy to allow the necessary permissions. Refer to the [SendToNotion Cloud Function README](https://github.com/your-repo/send-to-notion#troubleshooting) for detailed troubleshooting steps.
+
+## Future Maintenance
+
+- **API Key Security:** Ensure that the `config.js` file, especially the API keys, is kept secure. Consider rotating these keys periodically and updating the configuration accordingly.
 
 ## Contributing
 

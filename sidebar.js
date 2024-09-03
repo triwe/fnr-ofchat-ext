@@ -27,7 +27,7 @@ function sendDataToNotion(databaseId, data) {
                 type: data.type,
                 requestDetails: data.requestDetails,  // Ensure requestDetails is included
                 notes: data.notes,  // Ensure notes is included
-                budget: data.budget.replace(/\$|,/g, '') // Remove formatting from budget
+                budget: data.budget ? data.budget.replace(/\$|,/g, '') : '' // Handle undefined budget
             }
         })
     })
@@ -76,6 +76,7 @@ function showErrorMessage(message) {
 }
 
 async function submitFeedbackForm() {
+    console.log("Submitting feedback form...");
     const submitButton = document.getElementById('submit-feedback');
     submitButton.disabled = true;
 
@@ -84,8 +85,14 @@ async function submitFeedbackForm() {
     const category = document.getElementById('category').value;
     const tags = document.getElementById('tags').value;
 
+    // Log the values to confirm they are correct
+    console.log("Member Profile:", memberProfile);
+    console.log("Feedback:", feedback);
+    console.log("Category:", category);
+    console.log("Tags:", tags);
+
     const data = {
-        type: 'feedback', // Specify the type
+        type: 'feedback',
         title: `Feedback from ${memberProfile}`,
         feedback,
         category,
@@ -94,9 +101,11 @@ async function submitFeedbackForm() {
     };
 
     try {
+        console.log("Sending data to Notion...");
         await sendDataToNotion(FEEDBACK_DATABASE_ID, data);
         showConfirmationMessage('Feedback Submitted');
     } catch (error) {
+        console.error('Failed to submit feedback:', error);
         showErrorMessage('Failed to submit feedback. Please try again.');
         submitButton.disabled = false;
     }
@@ -374,9 +383,10 @@ function resetSidebar(fullyClose) {
   
   // Function to attach event listeners to buttons
   function attachButtonListeners() {
-      document.getElementById('send-feedback').addEventListener('click', gatherFeedbackAndShowForm);
-      document.getElementById('send-request').addEventListener('click', gatherRequestsAndShowForm);
-  }
+    console.log("Attaching button listeners...");
+    document.getElementById('send-feedback').addEventListener('click', gatherFeedbackAndShowForm);
+    document.getElementById('send-request').addEventListener('click', gatherRequestsAndShowForm);
+    }
   
   // Function to inject the sidebar into the page
   function injectSidebar() {
