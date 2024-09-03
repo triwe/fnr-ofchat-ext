@@ -1,14 +1,14 @@
 # OnlyFans Feedback and Request Extension
 
-This repository contains the front-end code for a chrome browser extension that allows OnlyFans creators/managers to submit feedback and requests directly from the platform. The extension captures the data and sends it to a Notion database via the `SendToNotion` Cloud Function.
+This repository contains the front-end code for a Chrome browser extension that allows OnlyFans creators and managers to track feedback and requests directly from the platform. The extension captures the data and sends it to a Notion database via the `SendToNotion` Cloud Function.
 
-https://github.com/triwe/FnRsendToNotion
+[Backend Repository Link](https://github.com/triwe/FnRsendToNotion)
 
 ## Features
 
 - **User-Friendly Interface:** Provides an easy-to-use interface for submitting feedback and requests from OnlyFans chats and comments.
-- **Integrated with Notion:** Automatically sends sumitted feedback and request data to a Notion database.
-- **Customizable:** Supports custom categories, tags, and fields.
+- **Integrated with Notion:** Automatically sends submitted feedback and request data to a Notion database.
+- **Customizable:** Supports custom categories, tags, and fields, allowing flexibility in managing feedback and requests.
 - **CORS Support:** Configured to work seamlessly with the OnlyFans platform.
 
 ## Setup
@@ -18,8 +18,8 @@ https://github.com/triwe/FnRsendToNotion
 Clone the repository to your local development environment:
 
 ```bash
-git clone https://github.com/your-repo/onlyfans-feedback-extension.git
-cd onlyfans-feedback-extension
+git clone https://github.com/triwe/fnr-ofchat-ext-front.git
+cd fnr-ofchat-ext-front
 ```
 
 ### 2. Install Dependencies
@@ -47,10 +47,10 @@ window.CONFIG = {
 };
 ```
 
-- `NOTION_API_KEY`: Your Notion API key for accessing the Notion database.
-- `GOOGLE_API_KEY`: Your Google API key used for authenticating with the `SendToNotion` Cloud Function.
-- `FEEDBACK_DATABASE_ID`: The ID of the Notion database where feedback will be stored.
-- `REQUEST_DATABASE_ID`: The ID of the Notion database where requests will be stored.
+- **NOTION_API_KEY:** Your Notion API key for accessing the Notion database.
+- **GOOGLE_API_KEY:** Your Google API key used for authenticating with the `SendToNotion` Cloud Function.
+- **FEEDBACK_DATABASE_ID:** The ID of the Notion database where feedback will be stored.
+- **REQUEST_DATABASE_ID:** The ID of the Notion database where requests will be stored.
 
 ### 4. Load the Extension in Chrome
 
@@ -79,16 +79,19 @@ The extension supports custom fields for feedback and requests:
 - **Member Profile:** Automatically captures the URL of the OnlyFans profile.
 - **Category:** Users can categorize their feedback as Positive, Neutral, or Negative.
 - **Tags:** Users can add comma-separated tags to categorize feedback and requests further.
+- **Request Details:** Allows users to specify details of their requests, such as what content they want to be created.
+- **Budget:** Users can specify a budget associated with their request.
+- **Manager Notes:** Users can include additional notes for management to review.
 
 ## Development
 
 ### File Structure
 
-- `sidebar.js`: Main JavaScript file responsible for the sidebar functionality.
-- `config.js`: Configuration file for API keys and database IDs.
-- `sidebar.css`: Stylesheet for the extension's UI.
-- `manifest.json`: Chrome extension manifest file that defines the extension's properties.
-- `images/`: Directory containing extension icons and images.
+- **`sidebar.js`:** Main JavaScript file responsible for the sidebar functionality.
+- **`config.js`:** Configuration file for API keys and database IDs.
+- **`sidebar.css`:** Stylesheet for the extension's UI.
+- **`manifest.json`:** Chrome extension manifest file that defines the extension's properties.
+- **`images/`:** Directory containing extension icons and images.
 
 ### Local Development
 
@@ -104,6 +107,11 @@ For testing:
 1. **Simulate Requests:** Use the Chrome DevTools Network tab to inspect requests sent to the `SendToNotion` function.
 2. **Check Logs:** Use the `gcloud functions logs read sendToNotion` command to monitor logs from the Cloud Function.
 3. **Notion Integration:** Verify that feedback and requests appear correctly in the Notion database.
+
+### Recent Updates
+
+- **Support for Separate Forms:** The extension now supports two forms—one for feedback and another for requests—ensuring that the correct data structure is sent to the Notion database.
+- **Enhanced Field Handling:** The extension now properly handles additional fields such as `requestDetails`, `notes`, and `budget`, ensuring that all necessary information is captured and sent.
 
 ## Troubleshooting
 
