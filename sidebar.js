@@ -1,33 +1,100 @@
 let checkmarksVisible = false;
 let selectedFeedback = [];
-import CONFIG from './config.js';
+const CONFIG = window.CONFIG;
 
 const NOTION_API_KEY = CONFIG.NOTION_API_KEY;
+const GOOGLE_API_KEY = CONFIG.GOOGLE_API_KEY;
 const FEEDBACK_DATABASE_ID = CONFIG.FEEDBACK_DATABASE_ID;
 const REQUEST_DATABASE_ID = CONFIG.REQUEST_DATABASE_ID;
 
-// Your existing code that uses these variables...
+function sendDataToNotion(databaseId, data) {
+    const apiKey = window.CONFIG.GOOGLE_API_KEY;  // Get the API key from config.js
 
-// Function to send data to Notion
-function sendDataToNotion(databaseId, apiKey, data) {
-  return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(
-          {
-              type: 'sendDataToNotion',
-              databaseId,
-              apiKey,
-              data
-          },
-          (response) => {
-              if (response.status === 'success') {
-                  resolve(response.data);
-              } else {
-                  reject(response.error);
-              }
-          }
-      );
-  });
+    return fetch('https://us-central1-ofchat-ext-feedback.cloudfunctions.net/sendToNotion', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,  // Correct API Key from config.js
+            'x-api-key': apiKey,                  // Ensure both headers use the correct API Key
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            databaseId: databaseId,
+            data: {
+                title: data.title,
+                feedback: data.feedback,
+                category: data.category,
+                tags: data.tags
+            }
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error sending data to Notion: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(responseData => {
+        console.log('Response from Notion:', responseData);
+    })
+    .catch(error => {
+        console.error('Error sending data to Notion:', error);
+    });
 }
+
+async function submitFeedbackForm() {
+    const memberProfile = document.getElementById('member-profile').value;
+    const feedback = document.getElementById('feedback').value;
+    const category = document.getElementById('category').value;
+    const tags = document.getElementById('tags').value;
+
+    const data = {
+        title: `Feedback from ${memberProfile}`,
+        feedback,
+        category,
+        tags,
+    };
+
+    // Send form to Notion
+    try {
+        await sendDataToNotion(FEEDBACK_DATABASE_ID, data);
+        showConfirmationMessage('Feedback Submitted');
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        alert('Failed to submit feedback. Please try again.');
+    }
+
+    // Reset the sidebar after submission
+    resetSidebar(true);
+}
+
+async function submitRequestForm() {
+    const requestSubject = document.getElementById('request-subject').value;
+    const memberProfile = document.getElementById('member-profile').value;
+    const requestDetails = document.getElementById('request-details').value;
+    const budget = document.getElementById('budget').value;
+    const notes = document.getElementById('notes').value;
+
+    // Ensure the data object is fully populated
+    const data = {
+        title: `Request from ${memberProfile}`,
+        feedback: `${requestSubject}\n\n${requestDetails}\n\nBudget: ${budget}\nNotes: ${notes}`,
+        category: 'Request',  // Assuming this is a fixed category for requests
+        tags: 'Request'       // Assuming this is a fixed tag for requests
+    };
+
+    try {
+        await sendDataToNotion(REQUEST_DATABASE_ID, data);
+        showConfirmationMessage('Request Submitted');
+    } catch (error) {
+        console.error('Error submitting request:', error);
+        alert('Failed to submit request. Please try again.');
+    }
+
+    resetSidebar(true);
+}
+// Remaining sidebar.js functionality...
+
+// Additional sidebar.js functionality for checkboxes and UI interactions follows...
 
 // Function to add checkboxes next to each message or comment
 function addCheckboxes() {
@@ -260,11 +327,11 @@ async function submitFeedbackForm() {
 
   // Prepare the data object to send to Notion
   const data = {
-      title: `Feedback from ${memberProfile}`, // Adjust the title as needed
+    title: `Feedback from ${memberProfile}`,
       feedback,
-      category,
-      tags,
-  };
+     category,
+     tags,
+    };
 
   // Send form to Notion
   try {

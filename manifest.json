@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": ["https://onlyfans.com/*"],
-      "js": ["sidebar.js"]
+      "js": ["config.js", "sidebar.js"]
     }
   ],
   "web_accessible_resources": [

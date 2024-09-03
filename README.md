@@ -1,7 +1,3 @@
-### README.md for **fnr-ofchat-ext-front**
-
----
-
 ## FNR OFChat Extension Frontend
 
 This repository contains the frontend code for the FNR OFChat Chrome extension. The extension is designed to help manage client interactions on OnlyFans by allowing users to submit feedback and requests directly to Notion databases. It includes features like a sidebar for feedback and request submissions, dynamic content selection, and integration with Notion for data storage.
