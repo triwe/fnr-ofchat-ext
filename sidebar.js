@@ -8,11 +8,12 @@ const FEEDBACK_DATABASE_ID = CONFIG.FEEDBACK_DATABASE_ID;
 const REQUEST_DATABASE_ID = CONFIG.REQUEST_DATABASE_ID;
 
 function sendDataToNotion(databaseId, data) {
+    console.log("Sending data to Notion:", { databaseId, data });
     return fetch('https://us-central1-ofchat-ext-feedback.cloudfunctions.net/sendToNotion', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${GOOGLE_API_KEY}`,  // Correct API Key from config.js
-            'x-api-key': GOOGLE_API_KEY,                  // Ensure both headers use the correct API Key
+            'Authorization': `Bearer ${GOOGLE_API_KEY}`,
+            'x-api-key': GOOGLE_API_KEY,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -22,7 +23,11 @@ function sendDataToNotion(databaseId, data) {
                 feedback: data.feedback,
                 category: data.category,
                 tags: data.tags,
-                memberProfileURL: data.memberProfileURL // Include the member profile URL
+                memberProfileURL: data.memberProfileURL,
+                type: data.type,
+                requestDetails: data.requestDetails,  // Ensure requestDetails is included
+                notes: data.notes,  // Ensure notes is included
+                budget: data.budget.replace(/\$|,/g, '') // Remove formatting from budget
             }
         })
     })
@@ -72,7 +77,7 @@ function showErrorMessage(message) {
 
 async function submitFeedbackForm() {
     const submitButton = document.getElementById('submit-feedback');
-    submitButton.disabled = true; // Disable the button immediately after it's clicked
+    submitButton.disabled = true;
 
     const memberProfile = document.getElementById('member-profile').value;
     const feedback = document.getElementById('feedback').value;
@@ -80,57 +85,56 @@ async function submitFeedbackForm() {
     const tags = document.getElementById('tags').value;
 
     const data = {
+        type: 'feedback', // Specify the type
         title: `Feedback from ${memberProfile}`,
         feedback,
         category,
         tags,
-        memberProfileURL: memberProfile // Add the member profile URL here
+        memberProfileURL: memberProfile
     };
 
     try {
         await sendDataToNotion(FEEDBACK_DATABASE_ID, data);
-        showConfirmationMessage('Feedback Submitted'); // Show confirmation message here
-        console.log('Feedback successfully submitted to Notion');
+        showConfirmationMessage('Feedback Submitted');
     } catch (error) {
-        console.error('Error submitting feedback:', error);
         showErrorMessage('Failed to submit feedback. Please try again.');
-        submitButton.disabled = false; // Re-enable the button if submission fails
+        submitButton.disabled = false;
     }
 
-    resetSidebar(true); // Reset the sidebar after submission
+    resetSidebar(true);
 }
 
 async function submitRequestForm() {
     const submitButton = document.getElementById('submit-request');
-    submitButton.disabled = true; // Disable the button immediately after it's clicked
+    submitButton.disabled = true;
 
-    const requestSubject = document.getElementById('request-subject').value;
-    const memberProfile = document.getElementById('member-profile').value;
-    const requestDetails = document.getElementById('request-details').value;
-    const budget = document.getElementById('budget').value;
-    const notes = document.getElementById('notes').value;
+    const memberProfile = document.getElementById('member-profile').value || '';
+    const requestSubject = document.getElementById('request-subject').value || ''; // Title
+    const requestDetails = document.getElementById('request-details').value || ''; // Member Request
+    const budget = document.getElementById('budget').value || ''; // Budget
+    const notes = document.getElementById('notes').value || ''; // Manager Notes
 
     const data = {
-        title: `Request from ${memberProfile}`,
-        feedback: `${requestSubject}\n\n${requestDetails}\n\nBudget: ${budget}\nNotes: ${notes}`,
-        category: 'Request',
-        tags: 'Request',
-        memberProfileURL: memberProfile // Add the member profile URL here
+        type: 'request', // Specify the type
+        title: requestSubject, // Title for the request
+        category: 'Request', // Optional category
+        tags: 'Request', // Optional tags
+        memberProfileURL: memberProfile,
+        requestDetails: requestDetails, // Member Request
+        budget: budget, // Budget
+        notes: notes // Manager Notes
     };
 
     try {
         await sendDataToNotion(REQUEST_DATABASE_ID, data);
-        showConfirmationMessage('Request Submitted'); // Show confirmation message here
-        console.log('Request successfully submitted to Notion');
+        showConfirmationMessage('Request Submitted');
     } catch (error) {
-        console.error('Error submitting request:', error);
         showErrorMessage('Failed to submit request. Please try again.');
-        submitButton.disabled = false; // Re-enable the button if submission fails
+        submitButton.disabled = false;
     }
 
-    resetSidebar(true); // Reset the sidebar after submission
+    resetSidebar(true);
 }
-
 // Additional functions and event listeners follow...
 
 // Additional sidebar.js functionality for checkboxes and UI interactions follows...
