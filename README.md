@@ -1,11 +1,13 @@
 # OnlyFans Feedback and Request Extension
 
-This repository contains the front-end code for a browser extension that allows OnlyFans users to submit feedback and requests directly from the platform. The extension captures the data and sends it to a Notion database via the `SendToNotion` Cloud Function.
+This repository contains the front-end code for a chrome browser extension that allows OnlyFans creators/managers to submit feedback and requests directly from the platform. The extension captures the data and sends it to a Notion database via the `SendToNotion` Cloud Function.
+
+https://github.com/triwe/FnRsendToNotion
 
 ## Features
 
-- **User-Friendly Interface:** Provides an easy-to-use interface for submitting feedback and requests within OnlyFans.
-- **Integrated with Notion:** Automatically sends feedback and request data to a Notion database.
+- **User-Friendly Interface:** Provides an easy-to-use interface for submitting feedback and requests from OnlyFans chats and comments.
+- **Integrated with Notion:** Automatically sends sumitted feedback and request data to a Notion database.
 - **Customizable:** Supports custom categories, tags, and fields.
 - **CORS Support:** Configured to work seamlessly with the OnlyFans platform.
 

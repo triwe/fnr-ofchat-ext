@@ -34,13 +34,45 @@ function sendDataToNotion(databaseId, data) {
     })
     .then(responseData => {
         console.log('Response from Notion:', responseData);
+        return responseData; // Return the response data to confirm success
     })
     .catch(error => {
         console.error('Error sending data to Notion:', error);
+        throw error; // Re-throw the error to be caught in the submit function
     });
 }
 
+function showConfirmationMessage(message) {
+    sidebar.innerHTML = `
+        <div id="confirmation-message" style="text-align: center; padding: 20px;">
+            ${message}
+        </div>
+    `;
+
+    // Automatically hide the confirmation message after 3 seconds
+    setTimeout(() => {
+        resetSidebar(true);  // You can either reset or close the sidebar after confirmation
+    }, 3000);
+}
+
+function showErrorMessage(message) {
+    const sidebar = document.getElementById('feedback-sidebar');
+    sidebar.innerHTML = `
+        <div id="error-message" style="text-align: center; color: red; padding: 20px;">
+            ${message}
+        </div>
+    `;
+
+    // Automatically hide the error message after 5 seconds
+    setTimeout(() => {
+        resetSidebar(true);  // Reset or close the sidebar after showing the error
+    }, 5000);
+}
+
 async function submitFeedbackForm() {
+    const submitButton = document.getElementById('submit-feedback');
+    submitButton.disabled = true; // Disable the button immediately after it's clicked
+
     const memberProfile = document.getElementById('member-profile').value;
     const feedback = document.getElementById('feedback').value;
     const category = document.getElementById('category').value;
@@ -56,16 +88,21 @@ async function submitFeedbackForm() {
 
     try {
         await sendDataToNotion(FEEDBACK_DATABASE_ID, data);
-        showConfirmationMessage('Feedback Submitted');
+        showConfirmationMessage('Feedback Submitted'); // Show confirmation message here
+        console.log('Feedback successfully submitted to Notion');
     } catch (error) {
         console.error('Error submitting feedback:', error);
-        alert('Failed to submit feedback. Please try again.');
+        showErrorMessage('Failed to submit feedback. Please try again.');
+        submitButton.disabled = false; // Re-enable the button if submission fails
     }
 
-    resetSidebar(true);
+    resetSidebar(true); // Reset the sidebar after submission
 }
 
 async function submitRequestForm() {
+    const submitButton = document.getElementById('submit-request');
+    submitButton.disabled = true; // Disable the button immediately after it's clicked
+
     const requestSubject = document.getElementById('request-subject').value;
     const memberProfile = document.getElementById('member-profile').value;
     const requestDetails = document.getElementById('request-details').value;
@@ -82,15 +119,18 @@ async function submitRequestForm() {
 
     try {
         await sendDataToNotion(REQUEST_DATABASE_ID, data);
-        showConfirmationMessage('Request Submitted');
+        showConfirmationMessage('Request Submitted'); // Show confirmation message here
+        console.log('Request successfully submitted to Notion');
     } catch (error) {
         console.error('Error submitting request:', error);
-        alert('Failed to submit request. Please try again.');
+        showErrorMessage('Failed to submit request. Please try again.');
+        submitButton.disabled = false; // Re-enable the button if submission fails
     }
 
-    resetSidebar(true);
+    resetSidebar(true); // Reset the sidebar after submission
 }
-// Remaining sidebar.js functionality...
+
+// Additional functions and event listeners follow...
 
 // Additional sidebar.js functionality for checkboxes and UI interactions follows...
 
@@ -297,34 +337,35 @@ function showRequestForm() {
             ${message}
         </div>
     `;
-  
+
     // Automatically hide the confirmation message after 3 seconds
     setTimeout(() => {
         resetSidebar(true);  // You can either reset or close the sidebar after confirmation
-    }, 3000);
-  }
-  
-  // Function to reset the sidebar to its initial state and reattach event listeners
-  function resetSidebar(fullyClose) {
-      const sidebar = document.getElementById('feedback-sidebar');
-      sidebar.innerHTML = `
-          <button id="send-feedback" style="display: none;">Send Feedback</button>
-          <button id="send-request" style="display: none;">Send Request</button>
-      `;
-      checkmarksVisible = false;
-      removeCheckboxes();
-  
-      if (fullyClose) {
-          sidebar.classList.remove('open');
-          sidebar.style.right = '-200px'; // Move off-screen
-      } else {
-          sidebar.classList.remove('open');
-          sidebar.style.right = '-200px'; // Move off-screen but keep ready to reopen
-      }
-  
-      // Reattach event listeners
-      attachButtonListeners();
-  }
+    }, 3000); // 3000 ms = 3 seconds
+}
+
+function resetSidebar(fullyClose) {
+    setTimeout(() => {
+        const sidebar = document.getElementById('feedback-sidebar');
+        sidebar.innerHTML = `
+            <button id="send-feedback" style="display: none;">Send Feedback</button>
+            <button id="send-request" style="display: none;">Send Request</button>
+        `;
+        checkmarksVisible = false;
+        removeCheckboxes();
+
+        if (fullyClose) {
+            sidebar.classList.remove('open');
+            sidebar.style.right = '-200px'; // Move off-screen
+        } else {
+            sidebar.classList.remove('open');
+            sidebar.style.right = '-200px'; // Move off-screen but keep ready to reopen
+        }
+
+        // Reattach event listeners
+        attachButtonListeners();
+    }, 3000); // Add delay to match the time in showConfirmationMessage
+}
   
   // Function to attach event listeners to buttons
   function attachButtonListeners() {

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "OnlyFans Feedback Notion",
+  "name": "OnlyFans Feedback & Requests",
   "version": "1.0",
   "permissions": ["activeTab", "scripting"],
   "background": {
