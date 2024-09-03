@@ -21,7 +21,8 @@ function sendDataToNotion(databaseId, data) {
                 title: data.title,
                 feedback: data.feedback,
                 category: data.category,
-                tags: data.tags
+                tags: data.tags,
+                memberProfileURL: data.memberProfileURL // Include the member profile URL
             }
         })
     })
@@ -50,6 +51,7 @@ async function submitFeedbackForm() {
         feedback,
         category,
         tags,
+        memberProfileURL: memberProfile // Add the member profile URL here
     };
 
     try {
@@ -74,7 +76,8 @@ async function submitRequestForm() {
         title: `Request from ${memberProfile}`,
         feedback: `${requestSubject}\n\n${requestDetails}\n\nBudget: ${budget}\nNotes: ${notes}`,
         category: 'Request',
-        tags: 'Request'
+        tags: 'Request',
+        memberProfileURL: memberProfile // Add the member profile URL here
     };
 
     try {
@@ -87,7 +90,6 @@ async function submitRequestForm() {
 
     resetSidebar(true);
 }
-
 // Remaining sidebar.js functionality...
 
 // Additional sidebar.js functionality for checkboxes and UI interactions follows...
