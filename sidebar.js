@@ -43,6 +43,7 @@ function sendDataToNotion(databaseId, data) {
 }
 
 function showConfirmationMessage(message) {
+    const sidebar = document.getElementById('feedback-sidebar');
     sidebar.innerHTML = `
         <div id="confirmation-message" style="text-align: center; padding: 20px;">
             ${message}

@@ -22,8 +22,6 @@ git clone https://github.com/your-repo/onlyfans-feedback-extension.git
 cd onlyfans-feedback-extension
 ```
 
-````
-
 ### 2. Install Dependencies
 
 Make sure you have Node.js installed, then install the necessary dependencies:
@@ -126,4 +124,3 @@ Contributions are welcome! If you'd like to contribute, please fork the reposito
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-````
