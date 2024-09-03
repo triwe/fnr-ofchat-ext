@@ -1,66 +1,127 @@
-## FNR OFChat Extension Frontend
+# OnlyFans Feedback and Request Extension
 
-This repository contains the frontend code for the FNR OFChat Chrome extension. The extension is designed to help manage client interactions on OnlyFans by allowing users to submit feedback and requests directly to Notion databases. It includes features like a sidebar for feedback and request submissions, dynamic content selection, and integration with Notion for data storage.
+This repository contains the front-end code for a browser extension that allows OnlyFans users to submit feedback and requests directly from the platform. The extension captures the data and sends it to a Notion database via the `SendToNotion` Cloud Function.
 
-### Features
+## Features
 
-- **Sidebar Interface**: The extension adds a sidebar to the OnlyFans chat page that allows users to submit feedback or requests.
-- **Dynamic Content Selection**: Users can select chat messages or comments, which are dynamically added to the form fields.
-- **Notion Integration**: The extension sends feedback and requests directly to specified Notion databases via a backend API.
-- **User ID Autofill**: Automatically detects and fills out the member profile based on the current chat URL.
-- **Secure API Key Handling**: Uses a `config.js` file to securely handle Notion API keys and database IDs.
-- **GitHub Integration**: The project is set up with GitHub for version control.
+- **User-Friendly Interface:** Provides an easy-to-use interface for submitting feedback and requests within OnlyFans.
+- **Integrated with Notion:** Automatically sends feedback and request data to a Notion database.
+- **Customizable:** Supports custom categories, tags, and fields.
+- **CORS Support:** Configured to work seamlessly with the OnlyFans platform.
 
-### Technologies Used
+## Setup
 
-- **JavaScript**: Core logic and interactions.
-- **CSS**: Styling for the sidebar and form elements.
-- **Chrome Extension API**: For injecting content scripts and background scripts.
-- **Notion API**: Integration with Notion databases for storing feedback and requests.
-- **Node.js**: (Upcoming) Backend logic for handling secure requests to the Notion API.
+### 1. Clone the Repository
 
-### Project Setup
+Clone the repository to your local development environment:
 
-1. **Initialize Git Repository**: The project is tracked using Git and hosted on GitHub.
-2. **Secure Configuration**: Sensitive information like API keys and database IDs are stored in a `config.js` file that is excluded from version control using `.gitignore`.
-3. **Content and Background Scripts**: The extension uses content scripts for interacting with the OnlyFans page and a background script for managing persistent tasks.
-4. **Google Cloud Functions**: A backend function is being set up using Google Cloud Functions to securely handle requests to the Notion API.
+```bash
+git clone https://github.com/your-repo/onlyfans-feedback-extension.git
+cd onlyfans-feedback-extension
+```
 
-### Current Progress
+````
 
-- **Frontend Development**: The core features of the frontend have been developed, including the sidebar, dynamic content selection, and Notion integration logic.
-- **Notion API Integration**: The frontend is ready to send data to the Notion API, and a Google Cloud Function is being set up to handle the backend processing securely.
-- **GitHub Integration**: The project has been pushed to GitHub, and version control is in place.
+### 2. Install Dependencies
 
-### Next Steps
+Make sure you have Node.js installed, then install the necessary dependencies:
 
-- **Complete Google Cloud Functions Setup**: Finalize the backend setup for secure communication with the Notion API.
-- **Testing and Debugging**: Ensure all features work seamlessly and perform extensive testing, especially on the API integration.
-- **Deployment**: Package the extension for deployment and installation by users.
+```bash
+npm install
+```
 
-### Installation
+### 3. Configure the Extension
 
-To install the extension locally:
+The extension configuration is managed through a `config.js` file. Follow these steps to set up your configuration:
 
-1. Clone the repository to your local machine.
-   ```bash
-   git clone https://github.com/triwe/fnr-ofchat-ext-front.git
-   cd fnr-ofchat-ext-front
-   ```
-2. Load the extension in Chrome:
+#### Create a `config.js` File
 
-   - Open Chrome and go to `chrome://extensions/`.
-   - Enable "Developer mode" in the top right corner.
-   - Click "Load unpacked" and select the project directory.
+Create a `config.js` file in the root of your `onlyfans-feedback-extension` directory:
 
-3. **Configure API Keys**:
-   - Rename `config.example.js` to `config.js`.
-   - Add your Notion API keys and database IDs to `config.js`.
+```javascript
+window.CONFIG = {
+  NOTION_API_KEY: "your_notion_api_key",
+  GOOGLE_API_KEY: "your_google_api_key",
+  FEEDBACK_DATABASE_ID: "your_feedback_database_id",
+  REQUEST_DATABASE_ID: "your_request_database_id",
+};
+```
 
-### Contributing
+- `NOTION_API_KEY`: Your Notion API key for accessing the Notion database.
+- `GOOGLE_API_KEY`: Your Google API key used for authenticating with the `SendToNotion` Cloud Function.
+- `FEEDBACK_DATABASE_ID`: The ID of the Notion database where feedback will be stored.
+- `REQUEST_DATABASE_ID`: The ID of the Notion database where requests will be stored.
 
-If you wish to contribute to the project, please fork the repository, create a new branch for your feature or bug fix, and submit a pull request.
+### 4. Load the Extension in Chrome
 
-### License
+To load the extension into Chrome:
 
-This project is licensed under the MIT License.
+1. Open Chrome and navigate to `chrome://extensions/`.
+2. Enable "Developer mode" in the top right corner.
+3. Click "Load unpacked" and select the `onlyfans-feedback-extension` directory.
+
+The extension should now be loaded and visible in your Chrome extensions.
+
+## Usage
+
+### Capturing Feedback and Requests
+
+The extension allows users to select text from messages or comments on OnlyFans and submit them as feedback or requests:
+
+1. **Toggle Sidebar:** Click the extension button to open the sidebar.
+2. **Select Text:** Click on messages or comments to select the text you want to submit.
+3. **Submit Feedback or Request:** Choose to submit the selected text as either feedback or a request.
+
+### Custom Fields
+
+The extension supports custom fields for feedback and requests:
+
+- **Member Profile:** Automatically captures the URL of the OnlyFans profile.
+- **Category:** Users can categorize their feedback as Positive, Neutral, or Negative.
+- **Tags:** Users can add comma-separated tags to categorize feedback and requests further.
+
+## Development
+
+### File Structure
+
+- `sidebar.js`: Main JavaScript file responsible for the sidebar functionality.
+- `config.js`: Configuration file for API keys and database IDs.
+- `sidebar.css`: Stylesheet for the extension's UI.
+- `manifest.json`: Chrome extension manifest file that defines the extension's properties.
+- `images/`: Directory containing extension icons and images.
+
+### Local Development
+
+To make changes to the extension:
+
+1. Edit the relevant files in your local repository.
+2. Reload the extension in Chrome to see the changes.
+
+### Testing the Extension
+
+For testing:
+
+1. **Simulate Requests:** Use the Chrome DevTools Network tab to inspect requests sent to the `SendToNotion` function.
+2. **Check Logs:** Use the `gcloud functions logs read sendToNotion` command to monitor logs from the Cloud Function.
+3. **Notion Integration:** Verify that feedback and requests appear correctly in the Notion database.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **CORS Errors:** If you encounter CORS issues, ensure that the `Access-Control-Allow-Origin` header in the Cloud Function is set correctly.
+2. **API Key Mismatch:** Ensure that the API keys in `config.js` match those set in your Cloud Function.
+3. **Extension Not Loading:** Double-check that your `manifest.json` file is correctly configured and that all required files are present in the directory.
+
+### Organization Policy Restrictions
+
+If your deployment or execution fails due to restrictive organization policies, you may need to modify the policy to allow the necessary permissions. Refer to the [SendToNotion Cloud Function README](https://github.com/your-repo/send-to-notion#troubleshooting) for detailed troubleshooting steps.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute, please fork the repository, create a feature branch, and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+````
