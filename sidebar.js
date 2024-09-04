@@ -46,7 +46,10 @@ function sendDataToNotion(databaseId, data) {
         throw error; // Re-throw the error to be caught in the submit function
     });
 }
-
+function extractDisplayName() {
+    const displayNameElement = document.querySelector('.b-username-row .g-user-realname__wrapper .g-user-name.m-verified');
+    return displayNameElement ? displayNameElement.textContent.trim() : 'Unknown User';
+}
 function showConfirmationMessage(message) {
     const sidebar = document.getElementById('feedback-sidebar');
     sidebar.innerHTML = `
@@ -81,6 +84,7 @@ async function submitFeedbackForm() {
     submitButton.disabled = true;
 
     const memberProfile = document.getElementById('member-profile').value;
+    const displayName = extractDisplayName();
     const feedback = document.getElementById('feedback').value;
     const category = document.getElementById('category').value;
     const tags = document.getElementById('tags').value;
@@ -93,7 +97,7 @@ async function submitFeedbackForm() {
 
     const data = {
         type: 'feedback',
-        title: `Feedback from ${memberProfile}`,
+        title: `Feedback by ${displayName}`,
         feedback,
         category,
         tags,
@@ -117,15 +121,19 @@ async function submitRequestForm() {
     const submitButton = document.getElementById('submit-request');
     submitButton.disabled = true;
 
+    const displayName = extractDisplayName(); // Extract display name
     const memberProfile = document.getElementById('member-profile').value || '';
     const requestSubject = document.getElementById('request-subject').value || ''; // Title
     const requestDetails = document.getElementById('request-details').value || ''; // Member Request
     const budget = document.getElementById('budget').value || ''; // Budget
     const notes = document.getElementById('notes').value || ''; // Manager Notes
 
+    // Construct the title with {request-subject} request by {displayName}
+    const title = `${requestSubject} request by ${displayName}`;
+
     const data = {
         type: 'request', // Specify the type
-        title: requestSubject, // Title for the request
+        title: title, // Use the constructed title here
         category: 'Request', // Optional category
         tags: 'Request', // Optional tags
         memberProfileURL: memberProfile,
@@ -251,53 +259,57 @@ function displayNoSelectionMessage() {
 }
 
 function showFeedbackForm() {
-  const userID = extractUserIDFromURL();
-  const memberProfileURL = userID ? `onlyfans.com/u${userID}` : '';
+    const displayName = extractDisplayName();
+    const userID = extractUserIDFromURL();
+    const memberProfileURL = userID ? `onlyfans.com/u${userID}` : '';
 
-  const sidebar = document.getElementById('feedback-sidebar');
-  sidebar.innerHTML = `
-      <form id="feedback-form">
-          <label for="member-profile">Member Profile</label>
-          <input type="text" id="member-profile" name="member-profile" value="${memberProfileURL}" placeholder="Enter profile link or name" required>
+    const sidebar = document.getElementById('feedback-sidebar');
+    sidebar.innerHTML = `
+        <form id="feedback-form">
+            <h2>Feedback from ${displayName}</h2>
 
-          <label for="feedback">Feedback</label>
-          <textarea id="feedback" name="feedback">${selectedFeedback.join('\n')}</textarea>
+            <input type="hidden" id="member-profile" name="member-profile" value="${memberProfileURL}">
 
-          <label for="category">Category</label>
-          <select id="category" name="category" required>
-              <option value="" disabled selected>Select a category</option>
-              <option value="Neutral">👌 Neutral</option>
-              <option value="Positive">👍 Positive</option>
-              <option value="Negative">👎 Negative</option>
-          </select>
+            <label for="feedback">Feedback</label>
+            <textarea id="feedback" name="feedback">${selectedFeedback.join('\n')}</textarea>
 
-          <label for="tags">Tags</label>
-          <input type="text" id="tags" name="tags" placeholder="Enter tags, comma-separated">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+                <option value="" disabled selected>Select a category</option>
+                <option value="Neutral">👌 Neutral</option>
+                <option value="Positive">👍 Positive</option>
+                <option value="Negative">👎 Negative</option>
+            </select>
 
-          <button type="button" id="submit-feedback">Send Feedback</button>
-          <button type="button" id="cancel-feedback">Cancel</button>
-      </form>
-  `;
+            <label for="tags">Tags</label>
+            <input type="text" id="tags" name="tags" placeholder="Enter tags, comma-separated">
 
-  document.getElementById('submit-feedback').addEventListener('click', submitFeedbackForm);
+            <button type="button" id="submit-feedback">Send Feedback</button>
+            <button type="button" id="cancel-feedback">Cancel</button>
+        </form>
+    `;
 
-  document.getElementById('cancel-feedback').addEventListener('click', () => {
-      resetSidebar(false);
-  });
+    // Event listeners for the buttons
+    document.getElementById('submit-feedback').addEventListener('click', submitFeedbackForm);
+    document.getElementById('cancel-feedback').addEventListener('click', () => {
+        resetSidebar(false);
+    });
 }
 
 function showRequestForm() {
+    const displayName = extractDisplayName();
     const userID = extractUserIDFromURL();
     const memberProfileURL = userID ? `onlyfans.com/u${userID}` : '';
   
     const sidebar = document.getElementById('feedback-sidebar');
     sidebar.innerHTML = `
         <form id="request-form">
+            <h2>Request from ${displayName}</h2>
+
             <label for="request-subject">Request Subject</label>
             <input type="text" id="request-subject" name="request-subject" placeholder="Enter request subject" required>
   
-            <label for="member-profile">Member Profile</label>
-            <input type="text" id="member-profile" name="member-profile" value="${memberProfileURL}" placeholder="Enter profile link or name" required>
+            <input type="hidden" id="member-profile" name="member-profile" value="${memberProfileURL}"> 
   
             <label for="request-details">Request Details</label>
             <textarea id="request-details" name="request-details">${selectedFeedback.join('\n')}</textarea>
